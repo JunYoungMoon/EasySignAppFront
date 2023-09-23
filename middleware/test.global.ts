@@ -1,5 +1,13 @@
+import { auth } from "~/composables/auth";
+
 export default defineNuxtRouteMiddleware((to, from) => {
-  console.log('test.global.ts : ');
-  console.log(to);
-  console.log(from);
+  const csrf = auth();
+
+  csrf.token() // 내부의 async 함수 실행
+    .then(res => {
+      console.log(res);
+    })
+    .catch(error => {
+      console.error("Error fetching CSRF token:", error);
+    });
 });
