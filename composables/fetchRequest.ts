@@ -3,25 +3,8 @@ interface AjaxRequestData {
   csrfToken?: string;
 }
 
-export const auth = () => {
-  const token = async () => {
-    try {
-      const response = await $fetch("/getcsrf", {
-        method: "GET",
-        baseURL: "http://localhost:8080",
-        credentials: "include"
-      });
-
-      console.log("CSRF token stored in Cookies:", response.token);
-
-      return response.token;
-    } catch (error) {
-      console.error("Error fetching CSRF token:", error);
-      throw error;
-    }
-  };
-
-  async function ajaxRequest<T>(
+export const fetchRequest = () => {
+  const response = async function ajaxRequest<T>(
     url: string,
     method: string,
     data: AjaxRequestData | undefined = undefined
@@ -49,8 +32,12 @@ export const auth = () => {
     }
   }
 
-  return {
-    token
-  };
+  return response()
+    .then(res => {
+      return res;
+    })
+    .catch(error => {
+      console.error("Error fetching CSRF token:", error);
+    });
 };
 

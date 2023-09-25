@@ -1,9 +1,9 @@
-export const csrf = () => {
-  const response = async () => {
+export const csrf = async () => {
+  try {
     const csrf = await $fetch("/getcsrf", {
       method: "GET",
-        baseURL: "http://localhost:8080",
-        credentials: "include"
+      baseURL: "http://localhost:8080",
+      credentials: "include"
     });
 
     const tokenInfo = csrf.token;
@@ -11,13 +11,7 @@ export const csrf = () => {
     console.log("CSRF token stored in Cookies:", tokenInfo);
 
     return tokenInfo;
-  };
-
-  return response()
-    .then(res => {
-      return res;
-    })
-    .catch(error => {
-      console.error("Error fetching CSRF token:", error);
-    });
+  } catch (error) {
+    console.error("Error fetching CSRF token:", error);
+  }
 };
