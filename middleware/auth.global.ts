@@ -1,8 +1,10 @@
 import { csrf } from "~/composables/csrf";
+import { checkAuth } from "~/composables/checkAuth";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
   try {
-    const authResponse = await csrf();
+    const csrfToken = await csrf();
+    const authResponse = await checkAuth('accessToken', csrfToken);
 
     console.log(authResponse);
   } catch (error) {
