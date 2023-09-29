@@ -13,6 +13,7 @@ export const fetchRequest = () => {
       "Content-Type": "application/json"
     };
 
+    //로컬 스토리지의 토큰을 찾아야함
     if (data.token) {
       headers.Authorization = `Bearer ${data.token}`;
     }

@@ -1,12 +1,12 @@
 export const csrf = async () => {
   try {
-    const csrf = await $fetch("/getcsrf", {
+    const csrfToken = await $fetch("/getcsrf", {
       method: "GET",
       baseURL: "http://localhost:8080",
       credentials: "include"
     });
 
-    const tokenInfo = csrf.token;
+    const tokenInfo = csrfToken.token;
 
     console.log("CSRF token stored in Cookies:", tokenInfo);
 
