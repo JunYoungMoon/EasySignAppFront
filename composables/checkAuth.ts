@@ -1,6 +1,7 @@
 
 export const checkAuth = async (tokenType : string, csrfToken : string) => {
   let token;
+
   if (tokenType === "accessToken") {
     token = localStorage.getItem("accessToken");
   } else if (tokenType === "refreshToken") {
@@ -8,7 +9,7 @@ export const checkAuth = async (tokenType : string, csrfToken : string) => {
     localStorage.getItem("refresh_token");
   } else {
     console.error("Invalid tokenType:", tokenType);
-    return;
+    return false;
   }
 
   try {

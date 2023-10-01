@@ -1,6 +1,10 @@
+interface CsrfTokenResponse {
+  token: string;
+}
+
 export const csrf = async () => {
   try {
-    const csrfToken = await $fetch("/getcsrf", {
+    const csrfToken:CsrfTokenResponse = await $fetch("/getcsrf", {
       method: "GET",
       baseURL: "http://localhost:8080",
       credentials: "include"

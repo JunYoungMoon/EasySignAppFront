@@ -1,44 +1,30 @@
+import { csrf } from "~/composables/csrf";
+import { checkAuth } from "~/composables/checkAuth";
+
 interface AjaxRequestData {
-  token?: string;
-  csrfToken?: string;
+  data?: object;
 }
 
-export const fetchRequest = () => {
-  const response = async function ajaxRequest<T>(
-    url: string,
-    method: string,
-    data: AjaxRequestData | undefined = undefined
-  ): Promise<T> {
-    const headers: { [key: string]: string } = {
-      "Content-Type": "application/json"
-    };
+type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-    //로컬 스토리지의 토큰을 찾아야함
-    if (data.token) {
-      headers.Authorization = `Bearer ${data.token}`;
-    }
+export const fetchRequest = async (url: string, method: HttpMethod, data: AjaxRequestData | undefined = undefined) => {
+  try {
+    const isAuth = checkAuth("accessToken", await csrf());
 
-    if (data.csrfToken) {
-      headers["X-XSRF-TOKEN"] = data.csrfToken;
-    }
-
-    try {
-      return await $fetch(url, {
-        method,
-        headers,
-        body: data
-      });
-    } catch (error) {
-      throw new Error("Request error: " + error.message);
-    }
-  }
-
-  return response()
-    .then(res => {
+    await $fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: data
+    }).then(res => {
       return res;
-    })
-    .catch(error => {
+    }).catch(error => {
       console.error("Error fetching CSRF token:", error);
     });
+
+  } catch (error: any) {
+    throw new Error("Request error: " + error.message);
+  }
 };
 
