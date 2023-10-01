@@ -2,9 +2,9 @@ interface CsrfTokenResponse {
   token: string;
 }
 
-export const csrf = async () => {
+export const csrf = async (): Promise<string> => {
   try {
-    const csrfToken:CsrfTokenResponse = await $fetch("/getcsrf", {
+    const csrfToken: CsrfTokenResponse = await $fetch("/getcsrf", {
       method: "GET",
       baseURL: "http://localhost:8080",
       credentials: "include"
@@ -17,5 +17,6 @@ export const csrf = async () => {
     return tokenInfo;
   } catch (error) {
     console.error("Error fetching CSRF token:", error);
+    throw error;
   }
 };

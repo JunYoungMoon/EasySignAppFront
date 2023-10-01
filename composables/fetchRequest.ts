@@ -9,7 +9,7 @@ type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
 export const fetchRequest = async (url: string, method: HttpMethod, data: AjaxRequestData | undefined = undefined) => {
   try {
-    const isAuth = checkAuth("accessToken", await csrf());
+    const isAuth = checkAuth("accessToken", csrf());
 
     await $fetch(url, {
       method,

@@ -1,6 +1,7 @@
 
-export const checkAuth = async (tokenType : string, csrfToken : string) => {
+export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<string> | string) => {
   let token;
+  const csrfToken = await csrfTokenPromise;
 
   if (tokenType === "accessToken") {
     token = localStorage.getItem("accessToken");
