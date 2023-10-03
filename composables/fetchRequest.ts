@@ -18,7 +18,10 @@ export const fetchRequest = async (url: string, method: HttpMethod, data: AjaxRe
       },
       body: data
     }).then(res => {
-      return res;
+      return {
+        res,
+        isAuth
+      };
     }).catch(error => {
       console.error("Error fetching CSRF token:", error);
     });

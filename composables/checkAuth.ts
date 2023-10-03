@@ -37,6 +37,7 @@ export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<st
     return { res };
 
   } catch (error) {
-    console.error("Error checking authentication:", error);
+    console.log("Error checking authentication:", error);
+    return false;
   }
 };

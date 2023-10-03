@@ -1,6 +1,7 @@
 <template>
 	<div>
 		<VApp>
+      <HeaderComponent></HeaderComponent>
 			<VMain>
 				<slot/>
 			</VMain>

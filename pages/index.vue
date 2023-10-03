@@ -1,7 +1,7 @@
 <template>
   <VContainer fluid class="fill-height">
     <VRow no-gutters align="center" justify="center" class="fill-height">
-      <VBtn type="button" @click="handleClick">login</VBtn>
+      <VBtn type="button">login</VBtn>
       <VCol cols="12" md="6" lg="5" sm="6">
         <VRow no-gutters align="center" justify="center">
           <VCol cols="12" md="6">
@@ -72,12 +72,6 @@
 </template>
 
 <script setup>
-import { oauth2Login } from "~/composables/userManager";
-
-const handleClick = () => {
-  oauth2Login('kakao');
-};
-
 const { ruleEmail, rulePassLen, ruleRequired } = useFormRules();
 const email = ref("");
 const password = ref("");
