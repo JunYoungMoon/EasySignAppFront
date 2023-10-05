@@ -14,7 +14,7 @@ export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<st
   }
 
   try {
-    const res = await $fetch("/check-auth", {
+    await $fetch("/check-auth", {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
@@ -27,15 +27,16 @@ export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<st
         token,
         csrfToken
       }
+    }).then(async (response) => {
+      if (tokenType === "accessToken" && response === "Refresh token required") {
+        await checkAuth("refreshToken", csrfToken);
+        return false;
+      }
+      return { response };
+    })
+    .catch((err) => {
+      console.log(err.message);
     });
-
-    if (tokenType === "accessToken" && res === "Refresh token required") {
-      await checkAuth("refreshToken", csrfToken);
-      return false;
-    }
-
-    return { res };
-
   } catch (error) {
     console.log("Error checking authentication:", error);
     return false;
