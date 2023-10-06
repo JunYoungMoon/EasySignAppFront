@@ -1,16 +1,23 @@
+interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  refreshTokenRequired : boolean;
+  // Add other properties as needed
+}
+
 export const checkAuth = async (tokenType: string, csrfToken: string) => {
   let token;
 
-  if (tokenType === "accessToken" || localStorage.getItem("accessToken")) {
+  if (tokenType === "accessToken" && localStorage.getItem("accessToken")) {
     token = localStorage.getItem("accessToken");
-  } else if (tokenType === "refreshToken" || localStorage.getItem("refreshToken")) {
+  } else if (tokenType === "refreshToken" && localStorage.getItem("refreshToken")) {
     token = localStorage.getItem("refreshToken");
   } else {
     return false;
   }
 
   try {
-    const res = await $fetch("/check-auth", {
+    const res: AuthResponse = await $fetch("/check-auth", {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
@@ -25,8 +32,17 @@ export const checkAuth = async (tokenType: string, csrfToken: string) => {
       }
     });
 
-    if (tokenType === "accessToken" && res === "Refresh token required") {
+    if (tokenType === "accessToken" && res.refreshTokenRequired) {
       await checkAuth("refreshToken", csrfToken);
+      return false;
+    }
+
+    if(tokenType === "refreshToken" && res.accessToken && res.refreshToken){
+      localStorage.setItem("accessToken", res.accessToken);
+      localStorage.setItem("refreshToken", res.refreshToken);
+
+      await checkAuth("accessToken", csrfToken);
+      return false;
     }
 
     console.log("check-auth :", res);
