@@ -7,27 +7,27 @@ interface AjaxRequestData {
 
 type HttpMethod = "GET" | "POST" | "PUT" | "DELETE";
 
-export const fetchRequest = async (url: string, method: HttpMethod, data: AjaxRequestData | undefined = undefined) => {
+export const fetchRequest = async (url: string, method: HttpMethod, data: AjaxRequestData) => {
   try {
-    const isAuth = checkAuth("accessToken", csrf());
+    const { token } = await csrf();
+    const isAuth = await checkAuth("accessToken", token);
 
-    await $fetch(url, {
+    const res = await $fetch(url, {
       method,
       headers: {
         "Content-Type": "application/json"
       },
       body: data
-    }).then(res => {
-      return {
-        res,
-        isAuth
-      };
-    }).catch(error => {
-      console.error("Error fetching CSRF token:", error);
     });
 
+    return {
+      res,
+      isAuth
+    };
+
   } catch (error: any) {
-    throw new Error("Request error: " + error.message);
+    console.log("Request error: " + error.message);
+    throw error;
   }
 };
 

@@ -3,10 +3,8 @@ import { csrf } from "~/composables/csrf";
 import { checkAuth } from "~/composables/checkAuth";
 
 onMounted(async () => {
-  const isAuth = checkAuth("accessToken", csrf());
-
-  debugger;
-  console.log(isAuth);
+  const { token } = await csrf();
+  const isAuth = await checkAuth("accessToken", token);
 });
 </script>
 

@@ -1,20 +1,16 @@
-
-export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<string> | string) => {
+export const checkAuth = async (tokenType: string, csrfToken: string) => {
   let token;
-  const csrfToken = await csrfTokenPromise;
 
-  if (tokenType === "accessToken") {
+  if (tokenType === "accessToken" || localStorage.getItem("accessToken")) {
     token = localStorage.getItem("accessToken");
-  } else if (tokenType === "refreshToken") {
-    token = localStorage.getItem("refresh_token");
-    localStorage.getItem("refresh_token");
+  } else if (tokenType === "refreshToken" || localStorage.getItem("refreshToken")) {
+    token = localStorage.getItem("refreshToken");
   } else {
-    console.error("Invalid tokenType:", tokenType);
     return false;
   }
 
   try {
-    await $fetch("/check-auth", {
+    const res = await $fetch("/check-auth", {
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${token}`,
@@ -27,16 +23,15 @@ export const checkAuth = async (tokenType : string, csrfTokenPromise: Promise<st
         token,
         csrfToken
       }
-    }).then(async (response) => {
-      if (tokenType === "accessToken" && response === "Refresh token required") {
-        await checkAuth("refreshToken", csrfToken);
-        return false;
-      }
-      return { response };
-    })
-    .catch((err) => {
-      console.log(err.message);
     });
+
+    if (tokenType === "accessToken" && res === "Refresh token required") {
+      await checkAuth("refreshToken", csrfToken);
+    }
+
+    console.log("check-auth :", res);
+
+    return res;
   } catch (error) {
     console.log("Error checking authentication:", error);
     return false;
